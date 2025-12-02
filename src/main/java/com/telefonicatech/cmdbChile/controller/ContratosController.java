@@ -39,7 +39,7 @@ public class ContratosController {
                 Sort.by(orders)
         );
 
-        return service.listar(pageable);
+        return service.listar(filter, pageable);
     }
 
 }

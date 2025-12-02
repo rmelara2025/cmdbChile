@@ -1,11 +1,14 @@
 package com.telefonicatech.cmdbChile.service;
 
+import com.telefonicatech.cmdbChile.dto.ContratoFilterRequest;
 import com.telefonicatech.cmdbChile.dto.ContratoViewResponse;
 import com.telefonicatech.cmdbChile.mapper.ContratoViewMapper;
+import com.telefonicatech.cmdbChile.model.ContratoViewSpecs;
 import com.telefonicatech.cmdbChile.model.ContratosView;
 import com.telefonicatech.cmdbChile.repository.ContratoViewRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +23,9 @@ public class ContratoViewService {
         this.mapper = mapper;
     }
 
-    public Page<ContratoViewResponse> listar(Pageable pageable) {
-        Page<ContratosView> page = repository.findAll(pageable);
+    public Page<ContratoViewResponse> listar(ContratoFilterRequest filter, Pageable pageable) {
+        Specification<ContratosView> spec = ContratoViewSpecs.withFilters(filter);
+        Page<ContratosView> page = repository.findAll(spec, pageable);
         return mapper.toPageDto(page);
     }
 }
