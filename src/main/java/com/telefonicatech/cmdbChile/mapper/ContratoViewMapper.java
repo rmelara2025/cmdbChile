@@ -16,8 +16,8 @@ public class ContratoViewMapper {
                 c.getNombreCliente(),
                 c.getFechaInicio(),
                 c.getFechaTermino(),
-                c.getCodChi(),
                 c.getCodSap(),
+                c.getCodChi(),
                 c.getCodSison()
         );
     }
