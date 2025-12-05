@@ -63,11 +63,11 @@ public class ContratoViewSpecs {
                         break;
 
                     case "por-expirar":
-                        predicates.add(cb.between(fechaTermino, hoy, hoy.plusDays(90)));
+                        predicates.add(cb.between(fechaTermino, hoy, hoy.plusDays(120)));
                         break;
 
                     case "vigente":
-                        predicates.add(cb.greaterThan(fechaTermino, hoy.plusDays(90)));
+                        predicates.add(cb.greaterThan(fechaTermino, hoy.plusDays(120)));
                         break;
                 }
             }
