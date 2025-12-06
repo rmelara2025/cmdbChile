@@ -1,5 +1,6 @@
 package com.telefonicatech.cmdbChile.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record ContratoViewResponse (
@@ -12,7 +13,8 @@ public record ContratoViewResponse (
         LocalDate fechaTermino,
         String codSap,
         String codChi,
-        String codSison
+        String codSison,
+        BigDecimal totalRecurrente
 ) {
 
 }

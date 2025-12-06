@@ -18,7 +18,8 @@ public class ContratoViewMapper {
                 c.getFechaTermino(),
                 c.getCodSap(),
                 c.getCodChi(),
-                c.getCodSison()
+                c.getCodSison(),
+                c.getTotalRecurrente()
         );
     }
 

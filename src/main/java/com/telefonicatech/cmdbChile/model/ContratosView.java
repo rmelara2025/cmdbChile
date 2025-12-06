@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.Immutable;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 
@@ -41,4 +42,6 @@ public class ContratosView {
     private String codSap;
     @Column(name = "codSison")
     private String codSison;
+    @Column(name = "totalRecurrente")
+    private BigDecimal totalRecurrente;
 }
