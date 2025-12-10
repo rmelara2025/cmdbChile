@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -34,6 +33,16 @@ public interface CotizacionDetalleRepository extends JpaRepository<CotizacionDet
         INNER JOIN familiaservicio c ON b.idFamilia = c.idFamilia
         INNER JOIN contrato d ON d.idContrato = a.idContrato
         INNER JOIN tipomoneda e ON d.idTipoMoneda = e.idTipoMoneda
+        WHERE a.idContrato = UUID_TO_BIN(:idContrato)
+          AND a.version_cotizacion = (
+              SELECT MAX(version_cotizacion)
+              FROM cotizaciondetalle
+              WHERE idContrato = UUID_TO_BIN(:idContrato)
+          )
+        """,
+            countQuery = """
+        SELECT COUNT(*)
+        FROM cotizaciondetalle a
         WHERE a.idContrato = UUID_TO_BIN(:idContrato)
           AND a.version_cotizacion = (
               SELECT MAX(version_cotizacion)

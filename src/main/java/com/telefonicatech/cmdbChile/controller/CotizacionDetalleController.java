@@ -8,10 +8,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/api/cotizaciones", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -27,6 +30,14 @@ public class CotizacionDetalleController {
     @GetMapping("/{idContrato}/detalle")
     public Page<CotizacionDetalleResponse> obtenerDetalle(@PathVariable String idContrato, @ModelAttribute ContratoFilterRequest filter){
 
+        // Validar que el idContrato sea un UUID válido y dar un 400 claro si no lo es
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(idContrato);
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "idContrato debe ser un UUID válido");
+        }
+
         List<Sort.Order> orders = helpers.parseSort(filter.getSort());
 
 
@@ -35,6 +46,6 @@ public class CotizacionDetalleController {
                 filter.getSize(),
                 Sort.by(orders)
         );
-        return service.obtenerDetalleCotizacion(idContrato,pageable);
+        return service.obtenerDetalleCotizacion(uuid,pageable);
     }
 }

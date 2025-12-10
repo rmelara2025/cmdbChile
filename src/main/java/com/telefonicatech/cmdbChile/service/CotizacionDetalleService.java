@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -20,8 +19,10 @@ public class CotizacionDetalleService {
         this.repository = repository;
     }
 
-    public Page<CotizacionDetalleResponse> obtenerDetalleCotizacion(String idContrato, Pageable pageable){
-        Page<CotizacionDetalleCustomDto> cot = repository.findDetalleCotizacion(idContrato, pageable);
+    public Page<CotizacionDetalleResponse> obtenerDetalleCotizacion(UUID idContrato, Pageable pageable){
+        // La consulta nativa usa UUID_TO_BIN(:idContrato) sobre un parámetro String,
+        // por eso convertimos a String aquí para evitar problemas de binding de tipos.
+        Page<CotizacionDetalleCustomDto> cot = repository.findDetalleCotizacion(idContrato != null ? idContrato.toString() : null, pageable);
 
         return cot.map(this::map);
     }
