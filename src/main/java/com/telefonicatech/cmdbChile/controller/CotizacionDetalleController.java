@@ -1,6 +1,8 @@
 package com.telefonicatech.cmdbChile.controller;
 
 import com.telefonicatech.cmdbChile.dto.ContratoFilterRequest;
+import com.telefonicatech.cmdbChile.dto.CotizacionDetalleEditarRequest;
+import com.telefonicatech.cmdbChile.dto.CotizacionDetalleNuevoRequest;
 import com.telefonicatech.cmdbChile.dto.CotizacionDetalleResponse;
 import com.telefonicatech.cmdbChile.helper.HelperCommons;
 import com.telefonicatech.cmdbChile.service.CotizacionDetalleService;
@@ -10,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -47,5 +50,18 @@ public class CotizacionDetalleController {
                 Sort.by(orders)
         );
         return service.obtenerDetalleCotizacion(uuid,pageable);
+    }
+
+
+    @PostMapping
+    public ResponseEntity<Void> putNuevoDetalle(@RequestBody CotizacionDetalleNuevoRequest request) {
+        service.addNewDetalle(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PutMapping("/editar")
+    public ResponseEntity<Void> putEditarDetalle(@RequestBody CotizacionDetalleEditarRequest request) {
+        service.editDetalle(request);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

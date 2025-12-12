@@ -16,4 +16,5 @@ public interface CotizacionDetalleCustomDto {
     String getNombreServicio();
     String getNombreFamilia();
     String getNombreTipoMoneda();
+    Integer getIdFamilia();
 }

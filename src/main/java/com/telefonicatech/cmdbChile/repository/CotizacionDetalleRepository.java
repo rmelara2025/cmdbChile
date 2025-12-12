@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -27,7 +28,8 @@ public interface CotizacionDetalleRepository extends JpaRepository<CotizacionDet
             a.fechaRegistro AS fechaRegistro,
             b.nombreServicio AS nombreServicio,
             c.nombreFamilia AS nombreFamilia,
-            e.nombreTipoMoneda AS nombreTipoMoneda
+            e.nombreTipoMoneda AS nombreTipoMoneda,
+            b.idFamilia AS idFamilia
         FROM cotizaciondetalle a
         INNER JOIN servicio b ON a.idServicio = b.idServicio
         INNER JOIN familiaservicio c ON b.idFamilia = c.idFamilia
@@ -52,4 +54,7 @@ public interface CotizacionDetalleRepository extends JpaRepository<CotizacionDet
         """,
             nativeQuery = true)
     Page<CotizacionDetalleCustomDto> findDetalleCotizacion(@Param("idContrato") String idContrato, Pageable pageable);
+
+    List<CotizacionDetalle> findByIdContrato(UUID idContrato);
+    List<CotizacionDetalle> findByIdContratoAndVersionCotizacion(UUID idContrato, Integer versionCotizacion);
 }
