@@ -63,6 +63,7 @@ public class CotizacionDetalleService {
         r.setNombreFamilia(dto.getNombreFamilia());
         r.setNombreTipoMoneda(dto.getNombreTipoMoneda());
         r.setIdFamilia(dto.getIdFamilia());
+        r.setIdTipoMoneda(dto.getIdTipoMoneda());
         return r;
     }
 

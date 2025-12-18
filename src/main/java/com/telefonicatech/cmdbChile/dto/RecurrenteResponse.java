@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TotalRecurrenteResponse {
+public class RecurrenteResponse {
     //private Long id;
 
     private String nombreTipoMoneda;

@@ -31,7 +31,7 @@ public class CotizacionDetalleController {
     }
 
     @GetMapping("/{idContrato}/detalle")
-    public Page<CotizacionDetalleResponse> obtenerDetalle(@PathVariable String idContrato, @ModelAttribute ContratoFilterRequest filter){
+    public ResponseEntity<Page<CotizacionDetalleResponse>> obtenerDetalle(@PathVariable String idContrato, @ModelAttribute ContratoFilterRequest filter){
 
         // Validar que el idContrato sea un UUID válido y dar un 400 claro si no lo es
         UUID uuid;
@@ -49,7 +49,8 @@ public class CotizacionDetalleController {
                 filter.getSize(),
                 Sort.by(orders)
         );
-        return service.obtenerDetalleCotizacion(uuid,pageable);
+        Page<CotizacionDetalleResponse> page = service.obtenerDetalleCotizacion(uuid,pageable);
+        return ResponseEntity.ok(page);
     }
 
 

@@ -7,6 +7,7 @@ import com.telefonicatech.cmdbChile.service.ContratoViewService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
@@ -28,7 +29,7 @@ public class ContratosController {
     }
 
     @GetMapping
-    public Page<ContratoViewResponse> listar(@ModelAttribute ContratoFilterRequest filter) {
+    public ResponseEntity<Page<ContratoViewResponse>> listar(@ModelAttribute ContratoFilterRequest filter) {
 
         List<Sort.Order> orders = helpers.parseSort(filter.getSort());
 
@@ -39,7 +40,8 @@ public class ContratosController {
                 Sort.by(orders)
         );
 
-        return service.listar(filter, pageable);
+        Page<ContratoViewResponse> page = service.listar(filter, pageable);
+        return ResponseEntity.ok(page);
     }
 
 }

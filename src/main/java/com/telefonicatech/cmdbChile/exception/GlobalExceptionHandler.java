@@ -10,12 +10,22 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
+import java.util.NoSuchElementException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(ChangeSetPersister.NotFoundException.class)
     ProblemDetail handleNotFound(ChangeSetPersister.NotFoundException ex, HttpServletRequest req){
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         pd.setTitle("Item Not Found");
+        pd.setProperty("instance", req.getRequestURI());
+        return pd;
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    ProblemDetail handleNoSuchElement(NoSuchElementException ex, HttpServletRequest req) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        pd.setTitle("Not Found");
         pd.setProperty("instance", req.getRequestURI());
         return pd;
     }

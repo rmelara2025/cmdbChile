@@ -20,6 +20,7 @@ public class CotizacionDetalleMapper {
         e.setCantidad(req.getCantidad());
         e.setRecurrente(req.getRecurrente());
         e.setAtributos(req.getAtributos());
+        e.setIdTipoMoneda(req.getIdTipoMoneda());
         return e;
     }
 
@@ -33,6 +34,7 @@ public class CotizacionDetalleMapper {
         copy.setCantidad(src.getCantidad());
         copy.setRecurrente(src.getRecurrente());
         copy.setAtributos(src.getAtributos());
+        copy.setIdTipoMoneda(src.getIdTipoMoneda());
         return copy;
     }
 
@@ -48,6 +50,7 @@ public class CotizacionDetalleMapper {
         e.setCantidad(req.getCantidad());
         e.setRecurrente(req.getRecurrente());
         e.setAtributos(req.getAtributos());
+        e.setIdTipoMoneda(req.getIdTipoMoneda());
         return e;
     }
 }

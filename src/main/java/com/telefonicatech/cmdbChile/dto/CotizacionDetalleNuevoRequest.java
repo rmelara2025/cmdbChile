@@ -18,5 +18,5 @@ public class CotizacionDetalleNuevoRequest {
     private Integer cantidad;
     private BigDecimal recurrente;
     private String atributos;
-
+    private Integer idTipoMoneda;
 }

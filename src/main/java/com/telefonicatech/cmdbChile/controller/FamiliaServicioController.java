@@ -5,6 +5,7 @@ import com.telefonicatech.cmdbChile.dto.FamiliaServiciosResponse;
 import com.telefonicatech.cmdbChile.service.FamiliaServicioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -21,16 +22,16 @@ public class FamiliaServicioController {
     }
 
     @GetMapping("/{idFamilia}/servicios")
-    public FamiliaServiciosResponse obtenerPorFamilia(@PathVariable Integer idFamilia) {
+    public ResponseEntity<FamiliaServiciosResponse> obtenerPorFamilia(@PathVariable Integer idFamilia) {
         FamiliaServiciosResponse res = service.obtenerPorFamilia(idFamilia);
         if (res == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Familia no encontrada");
-        return res;
+        return ResponseEntity.ok(res);
     }
 
     @GetMapping("")
-    public List<FamiliaDto> obtenerFamilias() {
-        return service.listarFamilias();
+    public ResponseEntity<List<FamiliaDto>> obtenerFamilias() {
+        List<FamiliaDto> res = service.listarFamilias();
+        return ResponseEntity.ok(res);
     }
 
 }
-

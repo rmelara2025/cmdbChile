@@ -48,4 +48,6 @@ public class CotizacionDetalle {
     @Column(name = "fechaRegistro")
     private LocalDateTime fechaRegistro;
 
+    @Column(name = "idTipoMoneda")
+    private Integer idTipoMoneda;
 }

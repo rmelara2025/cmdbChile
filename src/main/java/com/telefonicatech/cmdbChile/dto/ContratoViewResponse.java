@@ -6,7 +6,7 @@ import java.time.LocalDate;
 public record ContratoViewResponse (
         String idContrato,
         String rutCliente,
-        String nombreTipoMoneda,
+
         String nombreTipoPago,
         String nombreCliente,
         LocalDate fechaInicio,
@@ -14,7 +14,7 @@ public record ContratoViewResponse (
         String codSap,
         String codChi,
         String codSison,
-        BigDecimal totalRecurrente
+        Integer version
 ) {
 
 }

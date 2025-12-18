@@ -11,7 +11,6 @@ public class ContratoViewMapper {
         return new ContratoViewResponse(
                 c.getIdContrato(),
                 c.getRutCliente(),
-                c.getNombreTipoMoneda(),
                 c.getNombreTipoPago(),
                 c.getNombreCliente(),
                 c.getFechaInicio(),
@@ -19,7 +18,8 @@ public class ContratoViewMapper {
                 c.getCodSap(),
                 c.getCodChi(),
                 c.getCodSison(),
-                c.getTotalRecurrente()
+
+                c.getVersion()
         );
     }
 

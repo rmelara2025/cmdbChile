@@ -27,4 +27,5 @@ public class CotizacionDetalleResponse {
     private String nombreFamilia;
     private String nombreTipoMoneda;
     private Integer idFamilia;
+    private Integer idTipoMoneda;
 }

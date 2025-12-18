@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @Immutable
 @Table(name = "dashboardtotalrecurrentesview")
 @ToString
-public class TotalRecurrentesView {
+public class DashboardRecurrentesView {
     @Id
     @Column(name = "id")  // Debes crear este alias en la vista
     private Integer id;

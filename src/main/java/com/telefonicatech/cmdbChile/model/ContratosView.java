@@ -26,8 +26,7 @@ public class ContratosView {
 
     @Column(name = "rutCliente")
     private String rutCliente;
-    @Column(name = "nombreTipoMoneda")
-    private String nombreTipoMoneda;
+
     @Column(name = "nombreTipoPago")
     private String nombreTipoPago;
     @Column(name = "nombreCliente")
@@ -42,6 +41,7 @@ public class ContratosView {
     private String codSap;
     @Column(name = "codSison")
     private String codSison;
-    @Column(name = "totalRecurrente")
-    private BigDecimal totalRecurrente;
+
+    @Column(name="version")
+    private Integer version;
 }

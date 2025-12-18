@@ -29,12 +29,13 @@ public interface CotizacionDetalleRepository extends JpaRepository<CotizacionDet
             b.nombreServicio AS nombreServicio,
             c.nombreFamilia AS nombreFamilia,
             e.nombreTipoMoneda AS nombreTipoMoneda,
-            b.idFamilia AS idFamilia
+            b.idFamilia AS idFamilia,
+            e.idTipoMoneda as idTipoMoneda
         FROM cotizaciondetalle a
         INNER JOIN servicio b ON a.idServicio = b.idServicio
         INNER JOIN familiaservicio c ON b.idFamilia = c.idFamilia
         INNER JOIN contrato d ON d.idContrato = a.idContrato
-        INNER JOIN tipomoneda e ON d.idTipoMoneda = e.idTipoMoneda
+        INNER JOIN tipomoneda e ON a.idTipoMoneda = e.idTipoMoneda
         WHERE a.idContrato = UUID_TO_BIN(:idContrato)
           AND a.version_cotizacion = (
               SELECT MAX(version_cotizacion)
