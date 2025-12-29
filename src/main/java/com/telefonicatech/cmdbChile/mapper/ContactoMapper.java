@@ -2,6 +2,7 @@ package com.telefonicatech.cmdbChile.mapper;
 
 import com.telefonicatech.cmdbChile.dto.ContactoRequest;
 import com.telefonicatech.cmdbChile.dto.ContactoResponse;
+import com.telefonicatech.cmdbChile.exception.BadRequestException;
 import com.telefonicatech.cmdbChile.model.Contacto;
 import com.telefonicatech.cmdbChile.helper.RutUtils;
 import org.springframework.stereotype.Component;
@@ -15,7 +16,7 @@ public class ContactoMapper {
         if (req.getRutCliente() != null) {
             String formatted = RutUtils.formatRut(req.getRutCliente());
             if (!RutUtils.validateRut(formatted)) {
-                throw new IllegalArgumentException("RUT inválido: " + req.getRutCliente());
+                throw new BadRequestException("RUT inválido: " + req.getRutCliente());
             }
             c.setRutCliente(formatted);
         }
@@ -23,6 +24,12 @@ public class ContactoMapper {
         c.setNombre(req.getNombre());
         c.setEmail(req.getEmail());
         c.setCargo(req.getCargo());
+
+        // simple email validation if provided
+        if (c.getEmail() != null && !c.getEmail().contains("@")) {
+            throw new BadRequestException("Email inválido: " + c.getEmail());
+        }
+
         return c;
     }
 

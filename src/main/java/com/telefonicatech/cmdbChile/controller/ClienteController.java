@@ -4,7 +4,10 @@ import com.telefonicatech.cmdbChile.dto.ClienteFilterRequest;
 import com.telefonicatech.cmdbChile.dto.ClienteRequest;
 import com.telefonicatech.cmdbChile.dto.ClienteResponse;
 import com.telefonicatech.cmdbChile.helper.HelperCommons;
+import com.telefonicatech.cmdbChile.helper.RutUtils;
 import com.telefonicatech.cmdbChile.service.ClienteService;
+import com.telefonicatech.cmdbChile.service.ContactoService;
+import com.telefonicatech.cmdbChile.dto.ContactoResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,10 +23,12 @@ import java.util.List;
 public class ClienteController {
     private final ClienteService service;
     private final HelperCommons helpers;
+    private final ContactoService contactoService;
 
-    public ClienteController(ClienteService service, HelperCommons helper) {
+    public ClienteController(ClienteService service, HelperCommons helper, ContactoService contactoService) {
         this.service = service;
         this.helpers = helper;
+        this.contactoService = contactoService;
     }
 
     @GetMapping
@@ -39,8 +44,17 @@ public class ClienteController {
                 Sort.by(orders)
         );
 
-        //return service.listar(filter, pageable);
-        Page<ClienteResponse> page = service.list(filter.getNombreCliente(), pageable);
+        String term = null;
+        if (filter.getRutCliente() != null && !filter.getRutCliente().trim().isEmpty()) {
+            String formatted = RutUtils.formatRut(filter.getRutCliente());
+            if (RutUtils.validateRut(formatted)) {
+                term = formatted;
+            }
+        } else if (filter.getNombreCliente() != null && !filter.getNombreCliente().trim().isEmpty()) {
+            term = filter.getNombreCliente().trim();
+        }
+
+        Page<ClienteResponse> page = service.list(term, pageable);
         return ResponseEntity.ok(page);
     }
 
@@ -60,5 +74,16 @@ public class ClienteController {
     public ResponseEntity<ClienteResponse> update(@PathVariable("rut") String rut, @RequestBody ClienteRequest request) {
         ClienteResponse updated = service.update(rut, request);
         return ResponseEntity.ok(updated);
+    }
+
+    // Nuevo endpoint: listar contactos de un cliente
+    @GetMapping("/{rut}/contactos")
+    public ResponseEntity<List<ContactoResponse>> listContactos(@PathVariable("rut") String rut) {
+        String formatted = RutUtils.formatRut(rut);
+        if (!RutUtils.validateRut(formatted)) {
+            throw new IllegalArgumentException("RUT inválido: " + rut);
+        }
+        List<ContactoResponse> res = contactoService.listByRut(formatted);
+        return ResponseEntity.ok(res);
     }
 }

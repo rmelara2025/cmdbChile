@@ -13,7 +13,7 @@ public class RutUtils {
         return s;
     }
 
-    // Validate RUT using modulus 11 algorithm
+    // Validate RUT using modulus 11 algorithm (Chilean RUT)
     public static boolean validateRut(String rut) {
         if (rut == null) return false;
         String s = rut.replace(".", "").replace("-", "").toLowerCase();
@@ -21,17 +21,22 @@ public class RutUtils {
         String dv = s.substring(s.length() - 1);
         String num = s.substring(0, s.length() - 1);
         try {
-            int m = 0, sumb = 1;
+            int sum = 0;
+            int multiplier = 2;
             for (int i = num.length() - 1; i >= 0; i--) {
                 int digit = Character.digit(num.charAt(i), 10);
-                sumb = (sumb + digit * (9 - (m++ % 6))) % 11;
+                sum += digit * multiplier;
+                multiplier++;
+                if (multiplier > 7) multiplier = 2;
             }
-            int res = sumb == 0 ? 0 : 11 - sumb;
-            String dvCalc = res == 10 ? "k" : String.valueOf(res);
+            int remainder = 11 - (sum % 11);
+            String dvCalc;
+            if (remainder == 11) dvCalc = "0";
+            else if (remainder == 10) dvCalc = "k";
+            else dvCalc = String.valueOf(remainder);
             return dvCalc.equals(dv);
         } catch (Exception e) {
             return false;
         }
     }
 }
-

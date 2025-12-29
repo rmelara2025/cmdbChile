@@ -11,4 +11,5 @@ public class ClienteFilterRequest {
     private List<String> sort = List.of("rutCliente,desc");
 
     private String nombreCliente;
+    private String rutCliente; // nuevo campo para filtrar por RUT
 }

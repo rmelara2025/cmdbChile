@@ -2,6 +2,7 @@ package com.telefonicatech.cmdbChile.service;
 
 import com.telefonicatech.cmdbChile.dto.ClienteRequest;
 import com.telefonicatech.cmdbChile.dto.ClienteResponse;
+import com.telefonicatech.cmdbChile.helper.RutUtils;
 import com.telefonicatech.cmdbChile.mapper.ClienteMapper;
 import com.telefonicatech.cmdbChile.model.Cliente;
 import com.telefonicatech.cmdbChile.repository.ClienteRepository;
@@ -24,13 +25,21 @@ public class ClienteService {
 
     public Page<ClienteResponse> list(String q, Pageable pageable) {
         String term = (q == null || q.trim().isEmpty()) ? null : q.trim();
-        Page<Cliente> page = repository.searchByTerm(term, pageable);
+        String digitsTerm = null;
+        if (term != null) {
+            digitsTerm = term.replace(".", "").replace("-", "");
+        }
+        Page<Cliente> page = repository.searchByTerm(term, digitsTerm, pageable);
         return page.map(mapper::toResponse);
     }
 
     public ClienteResponse getByRut(String rut) {
-        Cliente c = repository.findById(rut)
-                .orElseThrow(() -> new NoSuchElementException("Cliente no encontrado: " + rut));
+        String formatted = RutUtils.formatRut(rut);
+        if (!RutUtils.validateRut(formatted)) {
+            throw new IllegalArgumentException("RUT inválido: " + rut);
+        }
+        Cliente c = repository.findById(formatted)
+                .orElseThrow(() -> new NoSuchElementException("Cliente no encontrado: " + formatted));
         return mapper.toResponse(c);
     }
 
@@ -39,8 +48,12 @@ public class ClienteService {
         if (req.getRutCliente() == null || req.getRutCliente().trim().isEmpty()) {
             throw new IllegalArgumentException("rutCliente es requerido");
         }
-        if (repository.existsById(req.getRutCliente())) {
-            throw new IllegalArgumentException("Cliente ya existe: " + req.getRutCliente());
+        String formatted = RutUtils.formatRut(req.getRutCliente());
+        if (!RutUtils.validateRut(formatted)) {
+            throw new IllegalArgumentException("RUT inválido: " + req.getRutCliente());
+        }
+        if (repository.existsById(formatted)) {
+            throw new IllegalArgumentException("Cliente ya existe: " + formatted);
         }
         Cliente e = mapper.toEntityForCreate(req);
         Cliente saved = repository.save(e);
@@ -49,8 +62,12 @@ public class ClienteService {
 
     @Transactional
     public ClienteResponse update(String rut, ClienteRequest req) {
-        Cliente existing = repository.findById(rut)
-                .orElseThrow(() -> new NoSuchElementException("Cliente no encontrado: " + rut));
+        String formattedRut = RutUtils.formatRut(rut);
+        if (!RutUtils.validateRut(formattedRut)) {
+            throw new IllegalArgumentException("RUT inválido: " + rut);
+        }
+        Cliente existing = repository.findById(formattedRut)
+                .orElseThrow(() -> new NoSuchElementException("Cliente no encontrado: " + formattedRut));
         mapper.updateEntityFromRequest(existing, req);
         Cliente saved = repository.save(existing);
         return mapper.toResponse(saved);
