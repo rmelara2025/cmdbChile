@@ -1,8 +1,10 @@
 package com.telefonicatech.cmdbChile.controller;
 
 import com.telefonicatech.cmdbChile.dto.CotizacionCompletaResponse;
+import com.telefonicatech.cmdbChile.dto.CotizacionEstadoUpdateRequest;
 import com.telefonicatech.cmdbChile.dto.CotizacionResponse;
 import com.telefonicatech.cmdbChile.service.CotizacionService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -61,5 +63,26 @@ public class CotizacionController {
 
         CotizacionCompletaResponse cotizacion = service.obtenerCotizacionCompleta(uuid);
         return ResponseEntity.ok(cotizacion);
+    }
+
+    /**
+     * Actualiza el estado de una cotización
+     * PUT /api/cotizaciones/{idCotizacion}/estado
+     */
+    @PutMapping("/api/cotizaciones/{idCotizacion}/estado")
+    public ResponseEntity<Void> actualizarEstado(
+            @PathVariable String idCotizacion,
+            @Valid @RequestBody CotizacionEstadoUpdateRequest request) {
+        try {
+            UUID id = UUID.fromString(idCotizacion);
+            service.actualizarEstado(id, request.getIdEstadoCotizacion());
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID de cotización inválido");
+        } catch (ResponseStatusException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar estado");
+        }
     }
 }

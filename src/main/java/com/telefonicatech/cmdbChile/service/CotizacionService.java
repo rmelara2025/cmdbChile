@@ -7,6 +7,7 @@ import com.telefonicatech.cmdbChile.dto.CotizacionTotalResponse;
 import com.telefonicatech.cmdbChile.exception.NotFoundException;
 import com.telefonicatech.cmdbChile.repository.CotizacionRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -121,5 +122,18 @@ public class CotizacionService {
         response.setTotales(totales);
 
         return response;
+    }
+
+    /**
+     * Actualiza el estado de una cotización
+     */
+    @Transactional
+    public void actualizarEstado(UUID idCotizacion, Integer idEstadoCotizacion) {
+        // Verificar que la cotización existe
+        repository.findById(idCotizacion)
+                .orElseThrow(() -> new NotFoundException("Cotización no encontrada: " + idCotizacion));
+
+        // Actualizar el estado
+        repository.updateEstado(idCotizacion.toString(), idEstadoCotizacion);
     }
 }
