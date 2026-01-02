@@ -27,8 +27,6 @@ public class ContratosView {
     @Column(name = "rutCliente")
     private String rutCliente;
 
-    @Column(name = "nombreTipoPago")
-    private String nombreTipoPago;
     @Column(name = "nombreCliente")
     private String nombreCliente;
     @Column(name = "fechaInicio")
@@ -42,6 +40,4 @@ public class ContratosView {
     @Column(name = "codSison")
     private String codSison;
 
-    @Column(name="version")
-    private Integer version;
 }

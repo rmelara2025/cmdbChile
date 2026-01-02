@@ -7,14 +7,12 @@ public record ContratoViewResponse (
         String idContrato,
         String rutCliente,
 
-        String nombreTipoPago,
         String nombreCliente,
         LocalDate fechaInicio,
         LocalDate fechaTermino,
         String codSap,
         String codChi,
-        String codSison,
-        Integer version
+        String codSison
 ) {
 
 }

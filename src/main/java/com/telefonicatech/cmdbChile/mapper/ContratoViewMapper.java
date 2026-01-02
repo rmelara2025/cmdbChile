@@ -11,15 +11,12 @@ public class ContratoViewMapper {
         return new ContratoViewResponse(
                 c.getIdContrato(),
                 c.getRutCliente(),
-                c.getNombreTipoPago(),
                 c.getNombreCliente(),
                 c.getFechaInicio(),
                 c.getFechaTermino(),
                 c.getCodSap(),
                 c.getCodChi(),
-                c.getCodSison(),
-
-                c.getVersion()
+                c.getCodSison()
         );
     }
 
