@@ -2,7 +2,9 @@ package com.telefonicatech.cmdbChile.controller;
 
 import com.telefonicatech.cmdbChile.dto.CotizacionCompletaResponse;
 import com.telefonicatech.cmdbChile.dto.CotizacionEstadoUpdateRequest;
+import com.telefonicatech.cmdbChile.dto.CotizacionItemsUpdateRequest;
 import com.telefonicatech.cmdbChile.dto.CotizacionResponse;
+import com.telefonicatech.cmdbChile.dto.CotizacionVersionResponse;
 import com.telefonicatech.cmdbChile.service.CotizacionService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -83,6 +85,47 @@ public class CotizacionController {
             throw e;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar estado");
+        }
+    }
+
+    /**
+     * Versiona una cotización existente
+     * POST /api/cotizaciones/{idCotizacion}/versionar
+     */
+    @PostMapping("/api/cotizaciones/{idCotizacion}/versionar")
+    public ResponseEntity<CotizacionVersionResponse> versionarCotizacion(
+            @PathVariable String idCotizacion) {
+        try {
+            UUID id = UUID.fromString(idCotizacion);
+            CotizacionVersionResponse response = service.versionarCotizacion(id);
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID de cotización inválido");
+        } catch (ResponseStatusException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al versionar cotización");
+        }
+    }
+
+    /**
+     * Guarda los items de una cotización
+     * PUT /api/cotizaciones/{idCotizacion}/items
+     */
+    @PutMapping("/api/cotizaciones/{idCotizacion}/items")
+    public ResponseEntity<Void> guardarItems(
+            @PathVariable String idCotizacion,
+            @Valid @RequestBody CotizacionItemsUpdateRequest request) {
+        try {
+            UUID id = UUID.fromString(idCotizacion);
+            service.guardarItems(id, request.getItems());
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID de cotización inválido");
+        } catch (ResponseStatusException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al guardar items");
         }
     }
 }

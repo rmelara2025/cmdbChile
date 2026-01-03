@@ -29,11 +29,11 @@ public class CotizacionDetalleItemResponse {
 
     // Tipo Moneda
     private Integer idTipoMoneda;
-    private String nombreTipoMoneda;
+    private String nombreMoneda;
 
     // Periodicidad
     private Integer idPeriodicidad;
-    private String periodicidad;
+    private String nombrePeriodicidad;
 
     private String fechaInicioFacturacion; // formato dd-MM-yyyy
     private String fechaFinFacturacion; // formato dd-MM-yyyy

@@ -11,9 +11,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class CotizacionTotalResponse {
 
+    private Integer idTipoMoneda;
     private String nombreMoneda;
-    private String codigoMoneda;
-    private BigDecimal totalOneShot;
-    private BigDecimal totalMensual;
-    private BigDecimal totalAnual;
+    private BigDecimal montoTotal;
 }

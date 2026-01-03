@@ -17,20 +17,18 @@ import java.util.UUID;
 public class CotizacionCompletaResponse {
 
     // Datos básicos de la cotización
-    private UUID idCotizacion;
-    private UUID idContrato;
+    private String idCotizacion;
     private String numeroCotizacion;
     private Integer version;
-    private String estadoNombre;
-    private String estadoDescripcion;
-    private String fechaEmision; // formato dd-MM-yyyy
-    private String fechaVigenciaDesde; // formato dd-MM-yyyy
-    private String fechaVigenciaHasta; // formato dd-MM-yyyy
+    private Integer idestadoCotizacion;
+    private String nombreEstado;
+    private String fechaCreacion; // formato dd-MM-yyyy
+    private String fechaVigencia; // formato dd-MM-yyyy
+    private String fechaVencimiento; // formato dd-MM-yyyy
     private String observacion;
-    private String fechaRegistro; // formato dd-MM-yyyy HH:mm:ss
 
     // Información completa: detalles e items
-    private List<CotizacionDetalleItemResponse> detalles;
+    private List<CotizacionDetalleItemResponse> items;
 
     // Totales calculados por moneda
     private List<CotizacionTotalResponse> totales;
