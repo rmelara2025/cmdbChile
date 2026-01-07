@@ -146,9 +146,17 @@ public class CotizacionService {
      */
     @Transactional
     public CotizacionVersionResponse versionarCotizacion(UUID idCotizacionAnterior) {
+        System.out.println("Versionando cotización: " + idCotizacionAnterior.toString());
+        
         // Obtener cotizacion anterior
         Cotizacion anterior = repository.findById(idCotizacionAnterior)
-                .orElseThrow(() -> new NotFoundException("Cotización no encontrada: " + idCotizacionAnterior));
+                .orElseThrow(() -> {
+                    System.out.println("Cotización no encontrada: {}" + idCotizacionAnterior);
+                    return new NotFoundException("Cotización no encontrada: " + idCotizacionAnterior);
+                });
+
+        System.out.println(String.format("Cotización anterior encontrada - Versión: {}, Contrato: {}",
+            anterior.getVersion(), anterior.getIdContrato()));
 
         // Crear nueva versión
         Cotizacion nueva = new Cotizacion();
@@ -161,26 +169,45 @@ public class CotizacionService {
         nueva.setFechaVigenciaDesde(anterior.getFechaVigenciaDesde());
         nueva.setFechaVigenciaHasta(anterior.getFechaVigenciaHasta());
         nueva.setFechaRegistro(LocalDateTime.now());
+        nueva.setIdUsuarioCreacion(anterior.getIdUsuarioCreacion()); //TODO: CAMBIAR DESPUES POR EL USAURIO QUE ESTA LOGUEADO
 
         String observacionReemplazo = String.format(
                 "Reemplazada por modificación en servicios - Ver v%d",
                 nueva.getVersion());
         nueva.setObservacion(observacionReemplazo);
 
+        System.out.println(String.format("Guardando nueva versión: {}, v{}", nueva.getIdCotizacion(), nueva.getVersion()));
+
         // Guardar nueva versión
-        nueva = repository.save(nueva);
+        try {
+            nueva = repository.save(nueva);
+            System.out.println("Nueva versión guardada exitosamente");
+        } catch (Exception e) {
+            System.out.println("Error al guardar nueva versión: {}" + e.getMessage());
+            throw e;
+        }
 
         // Actualizar estado de la anterior a REEMPLAZADA (5 según la base de datos)
         anterior.setIdEstadoCotizacion(5);
         anterior.setObservacion(observacionReemplazo);
         anterior.setFechaModificacion(LocalDateTime.now());
-        repository.save(anterior);
+        
+        try {
+            repository.save(anterior);
+            System.out.println("Cotización anterior marcada como REEMPLAZADA");
+        } catch (Exception e) {
+            System.out.println("Error al actualizar cotización anterior: {} "+  e.getMessage());
+            throw e;
+        }
 
         // Preparar respuesta
         CotizacionVersionResponse response = new CotizacionVersionResponse();
         response.setIdNuevaCotizacion(nueva.getIdCotizacion().toString());
         response.setNumeroCotizacion(nueva.getNumeroCotizacion());
         response.setVersion(nueva.getVersion());
+
+        System.out.println(String.format("Versionado completado exitosamente - Nueva ID: {}, v{}",
+            response.getIdNuevaCotizacion(), response.getVersion()));
 
         return response;
     }
@@ -203,16 +230,13 @@ public class CotizacionService {
         // Insertar nuevos items
         int numItem = 1;
         for (CotizacionDetalleItemRequest itemReq : items) {
-            BigDecimal subtotal = itemReq.getPrecioUnitario()
-                    .multiply(BigDecimal.valueOf(itemReq.getCantidad()));
-
+            // No enviamos subtotal porque es una columna generada por la base de datos
             repository.insertDetalle(
                     idCotizacion.toString(),
                     numItem++,
                     itemReq.getIdServicio(),
                     itemReq.getCantidad(),
                     itemReq.getPrecioUnitario(),
-                    subtotal,
                     itemReq.getIdTipoMoneda(),
                     itemReq.getIdPeriodicidad(),
                     itemReq.getFechaInicioFacturacion(),

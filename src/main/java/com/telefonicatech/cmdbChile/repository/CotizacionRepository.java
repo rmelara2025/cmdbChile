@@ -111,11 +111,11 @@ public interface CotizacionRepository extends JpaRepository<Cotizacion, UUID> {
     @Query(value = """
             INSERT INTO cotizaciondetalle (
                 idCotizacion, num_item, idServicio, cantidad, precioUnitario,
-                subtotal, idTipoMoneda, idPeriodicidad, fechaInicioFacturacion,
+                idTipoMoneda, idPeriodicidad, fechaInicioFacturacion,
                 fechaFinFacturacion, atributos, observacion
             ) VALUES (
                 UUID_TO_BIN(:idCotizacion), :numItem, :idServicio, :cantidad, :precioUnitario,
-                :subtotal, :idTipoMoneda, :idPeriodicidad, :fechaInicio,
+                :idTipoMoneda, :idPeriodicidad, :fechaInicio,
                 :fechaFin, :atributos, :observacion
             )
             """, nativeQuery = true)
@@ -125,7 +125,6 @@ public interface CotizacionRepository extends JpaRepository<Cotizacion, UUID> {
             @Param("idServicio") Integer idServicio,
             @Param("cantidad") Integer cantidad,
             @Param("precioUnitario") BigDecimal precioUnitario,
-            @Param("subtotal") BigDecimal subtotal,
             @Param("idTipoMoneda") Integer idTipoMoneda,
             @Param("idPeriodicidad") Integer idPeriodicidad,
             @Param("fechaInicio") LocalDate fechaInicio,

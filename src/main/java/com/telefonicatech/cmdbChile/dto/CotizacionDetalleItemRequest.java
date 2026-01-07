@@ -1,5 +1,6 @@
 package com.telefonicatech.cmdbChile.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -25,7 +26,10 @@ public class CotizacionDetalleItemRequest {
     @NotNull(message = "La periodicidad es obligatoria")
     private Integer idPeriodicidad;
 
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate fechaInicioFacturacion;
+
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate fechaFinFacturacion;
     private String atributos; // JSON string
     private String observacion;

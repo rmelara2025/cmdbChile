@@ -23,27 +23,25 @@ public class RecurrentesCustomRepository implements IRecurrentesCustomRepository
     @Override
     public List<RecurrenteResponse> findCustomTotals(RecurrenteRequest req) {
         // Construimos una subconsulta que calcula estado y los agregados, luego la consulta externa aplica ROW_NUMBER
-        StringBuilder sql = new StringBuilder(""
-            + "SELECT ROW_NUMBER() OVER(ORDER BY t.nombreTipoMoneda, t.estado) AS id, "
-            + "t.nombreTipoMoneda, t.estado, t.totalRecurrente, t.cantidadContratos "
-            + "FROM ( "
-            + "  SELECT c.nombreTipoMoneda, "
-            + "    CASE "
-            + "      WHEN a.fechaTermino < CURDATE() THEN 'expirado' "
-            + "      WHEN a.fechaTermino BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 120 DAY) THEN 'por-expirar' "
-            + "      ELSE 'vigente' "
-            + "    END AS estado, "
-            + "    SUM(b.recurrente) AS totalRecurrente, "
-            + "    COUNT(DISTINCT a.idContrato) AS cantidadContratos "
-            + "  FROM contratosview a "
-            + "  JOIN cotizaciondetalle b "
-            + "    ON a.idContrato = BIN_TO_UUID(b.idContrato) "
-            + "   AND b.version_cotizacion = ( "
-            + "      SELECT MAX(cd.version_cotizacion) FROM cotizaciondetalle cd WHERE cd.idContrato = b.idContrato "
-            + "   ) "
-                + " JOIN tipomoneda c ON c.idTipoMoneda = b.idTipoMoneda  "
-            + "  WHERE 1=1 "
-        + "" );
+        StringBuilder sql = new StringBuilder("""
+                SELECT   ROW_NUMBER() OVER() AS id,
+                    tm.nombreTipoMoneda,
+                    CASE
+                        WHEN a.fechaTermino < CURDATE() THEN 'expirado'
+                        WHEN a.fechaTermino BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 120 DAY) THEN 'por-expirar'
+                        ELSE 'vigente'
+                    END AS estado,
+                    SUM(b.subtotal) AS totalRecurrente,
+                    count(distinct a.idContrato) as cantidadContratos
+                FROM contratosview a
+                JOIN cotizacion c ON a.idContrato = BIN_TO_UUID(c.idContrato)
+                AND c.idestadocotizacion = 4
+                JOIN cotizaciondetalle b
+                        ON BIN_TO_UUID(c.idcotizacion) = BIN_TO_UUID(b.idcotizacion)
+                JOIN tipomoneda tm ON tm.idTipoMoneda = b.idTipoMoneda
+                WHERE b.idPeriodicidad = 2
+               
+                """ );
 
         Map<String, Object> params = new HashMap<>();
 
@@ -57,9 +55,8 @@ public class RecurrentesCustomRepository implements IRecurrentesCustomRepository
             params.put("nombre", "%" + req.getNombre().trim() + "%");
         }
 
-        sql.append(" GROUP BY c.nombreTipoMoneda, estado ");
-        sql.append(") t ");
-        sql.append(" ORDER BY t.nombreTipoMoneda, t.estado");
+        sql.append(" GROUP BY tm.nombreTipoMoneda, estado ");
+        sql.append(" ORDER BY tm.nombreTipoMoneda, estado");
 
         Query query = em.createNativeQuery(sql.toString());
 
