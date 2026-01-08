@@ -1,7 +1,7 @@
 package com.telefonicatech.cmdbChile.service;
 
-import com.telefonicatech.cmdbChile.dto.RecurrenteRequest;
-import com.telefonicatech.cmdbChile.dto.RecurrenteResponse;
+import com.telefonicatech.cmdbChile.dto.requestObject.RecurrenteRequest;
+import com.telefonicatech.cmdbChile.dto.responseObject.RecurrenteResponse;
 import com.telefonicatech.cmdbChile.model.DashboardRecurrentesView;
 import com.telefonicatech.cmdbChile.repository.DashboardRecurrenteRepository;
 import com.telefonicatech.cmdbChile.repository.RecurrentesCustomRepository;

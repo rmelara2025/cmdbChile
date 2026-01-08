@@ -1,13 +1,13 @@
 package com.telefonicatech.cmdbChile.controller;
 
-import com.telefonicatech.cmdbChile.dto.ClienteFilterRequest;
-import com.telefonicatech.cmdbChile.dto.ClienteRequest;
-import com.telefonicatech.cmdbChile.dto.ClienteResponse;
+import com.telefonicatech.cmdbChile.dto.requestObject.ClienteFilterRequest;
+import com.telefonicatech.cmdbChile.dto.requestObject.ClienteRequest;
+import com.telefonicatech.cmdbChile.dto.responseObject.ClienteResponse;
 import com.telefonicatech.cmdbChile.helper.HelperCommons;
 import com.telefonicatech.cmdbChile.helper.RutUtils;
 import com.telefonicatech.cmdbChile.service.ClienteService;
 import com.telefonicatech.cmdbChile.service.ContactoService;
-import com.telefonicatech.cmdbChile.dto.ContactoResponse;
+import com.telefonicatech.cmdbChile.dto.responseObject.ContactoResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

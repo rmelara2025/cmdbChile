@@ -1,9 +1,9 @@
 package com.telefonicatech.cmdbChile.controller;
 
-import com.telefonicatech.cmdbChile.dto.ContratoFilterRequest;
-import com.telefonicatech.cmdbChile.dto.CotizacionDetalleEditarRequest;
-import com.telefonicatech.cmdbChile.dto.CotizacionDetalleNuevoRequest;
-import com.telefonicatech.cmdbChile.dto.CotizacionDetalleResponse;
+import com.telefonicatech.cmdbChile.dto.requestObject.ContratoFilterRequest;
+import com.telefonicatech.cmdbChile.dto.requestObject.CotizacionDetalleEditarRequest;
+import com.telefonicatech.cmdbChile.dto.requestObject.CotizacionDetalleNuevoRequest;
+import com.telefonicatech.cmdbChile.dto.responseObject.CotizacionDetalleResponse;
 import com.telefonicatech.cmdbChile.helper.HelperCommons;
 import com.telefonicatech.cmdbChile.service.CotizacionDetalleService;
 import org.springframework.data.domain.Page;

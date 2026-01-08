@@ -1,11 +1,10 @@
 package com.telefonicatech.cmdbChile.repository;
 
-import com.telefonicatech.cmdbChile.dto.RecurrenteRequest;
-import com.telefonicatech.cmdbChile.dto.RecurrenteResponse;
+import com.telefonicatech.cmdbChile.dto.requestObject.RecurrenteRequest;
+import com.telefonicatech.cmdbChile.dto.responseObject.RecurrenteResponse;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
-import jakarta.persistence.criteria.*;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;

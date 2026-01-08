@@ -1,7 +1,7 @@
 package com.telefonicatech.cmdbChile.mapper;
 
-import com.telefonicatech.cmdbChile.dto.ClienteRequest;
-import com.telefonicatech.cmdbChile.dto.ClienteResponse;
+import com.telefonicatech.cmdbChile.dto.requestObject.ClienteRequest;
+import com.telefonicatech.cmdbChile.dto.responseObject.ClienteResponse;
 import com.telefonicatech.cmdbChile.model.Cliente;
 import org.springframework.stereotype.Component;
 

@@ -1,11 +1,10 @@
 package com.telefonicatech.cmdbChile.mapper;
 
-import com.telefonicatech.cmdbChile.dto.CotizacionDetalleEditarRequest;
-import com.telefonicatech.cmdbChile.dto.CotizacionDetalleNuevoRequest;
+import com.telefonicatech.cmdbChile.dto.requestObject.CotizacionDetalleEditarRequest;
+import com.telefonicatech.cmdbChile.dto.requestObject.CotizacionDetalleNuevoRequest;
 import com.telefonicatech.cmdbChile.model.CotizacionDetalle;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Component

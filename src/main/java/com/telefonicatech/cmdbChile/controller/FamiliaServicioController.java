@@ -1,7 +1,7 @@
 package com.telefonicatech.cmdbChile.controller;
 
 import com.telefonicatech.cmdbChile.dto.FamiliaDto;
-import com.telefonicatech.cmdbChile.dto.FamiliaServiciosResponse;
+import com.telefonicatech.cmdbChile.dto.responseObject.FamiliaServiciosResponse;
 import com.telefonicatech.cmdbChile.service.FamiliaServicioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

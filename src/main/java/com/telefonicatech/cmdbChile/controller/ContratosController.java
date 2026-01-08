@@ -1,7 +1,7 @@
 package com.telefonicatech.cmdbChile.controller;
 
-import com.telefonicatech.cmdbChile.dto.ContratoFilterRequest;
-import com.telefonicatech.cmdbChile.dto.ContratoViewResponse;
+import com.telefonicatech.cmdbChile.dto.requestObject.ContratoFilterRequest;
+import com.telefonicatech.cmdbChile.dto.responseObject.ContratoViewResponse;
 import com.telefonicatech.cmdbChile.helper.HelperCommons;
 import com.telefonicatech.cmdbChile.service.ContratoViewService;
 import org.springframework.data.domain.PageRequest;

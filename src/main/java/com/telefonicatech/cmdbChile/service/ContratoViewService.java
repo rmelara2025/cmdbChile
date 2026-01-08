@@ -1,11 +1,11 @@
 package com.telefonicatech.cmdbChile.service;
 
-import com.telefonicatech.cmdbChile.dto.ContratoFilterRequest;
-import com.telefonicatech.cmdbChile.dto.ContratoViewResponse;
+import com.telefonicatech.cmdbChile.dto.requestObject.ContratoFilterRequest;
+import com.telefonicatech.cmdbChile.dto.responseObject.ContratoViewResponse;
 import com.telefonicatech.cmdbChile.mapper.ContratoViewMapper;
 import com.telefonicatech.cmdbChile.model.ContratoViewSpecs;
 import com.telefonicatech.cmdbChile.model.ContratosView;
-import com.telefonicatech.cmdbChile.repository.ContratoViewRepository;
+import com.telefonicatech.cmdbChile.repository.cotizaciones.ContratoViewRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;

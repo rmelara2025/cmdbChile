@@ -1,8 +1,8 @@
 package com.telefonicatech.cmdbChile.controller;
 
-import com.telefonicatech.cmdbChile.dto.PeriodicidadResponse;
-import com.telefonicatech.cmdbChile.dto.ServicioResponse;
-import com.telefonicatech.cmdbChile.dto.TipoMonedaResponse;
+import com.telefonicatech.cmdbChile.dto.responseObject.PeriodicidadResponse;
+import com.telefonicatech.cmdbChile.dto.responseObject.ServicioResponse;
+import com.telefonicatech.cmdbChile.dto.responseObject.TipoMonedaResponse;
 import com.telefonicatech.cmdbChile.service.CatalogosService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

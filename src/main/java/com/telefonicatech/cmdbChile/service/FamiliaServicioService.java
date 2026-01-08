@@ -1,12 +1,12 @@
 package com.telefonicatech.cmdbChile.service;
 
 import com.telefonicatech.cmdbChile.dto.FamiliaDto;
-import com.telefonicatech.cmdbChile.dto.FamiliaServiciosResponse;
+import com.telefonicatech.cmdbChile.dto.responseObject.FamiliaServiciosResponse;
 import com.telefonicatech.cmdbChile.dto.ServicioDto;
 import com.telefonicatech.cmdbChile.model.FamiliaServicio;
 import com.telefonicatech.cmdbChile.model.Servicio;
-import com.telefonicatech.cmdbChile.repository.FamiliaServicioRepository;
-import com.telefonicatech.cmdbChile.repository.ServicioRepository;
+import com.telefonicatech.cmdbChile.repository.catalogos.FamiliaServicioRepository;
+import com.telefonicatech.cmdbChile.repository.catalogos.ServicioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

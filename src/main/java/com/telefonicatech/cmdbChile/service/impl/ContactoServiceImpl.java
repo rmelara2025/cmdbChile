@@ -1,7 +1,7 @@
 package com.telefonicatech.cmdbChile.service.impl;
 
-import com.telefonicatech.cmdbChile.dto.ContactoRequest;
-import com.telefonicatech.cmdbChile.dto.ContactoResponse;
+import com.telefonicatech.cmdbChile.dto.requestObject.ContactoRequest;
+import com.telefonicatech.cmdbChile.dto.responseObject.ContactoResponse;
 import com.telefonicatech.cmdbChile.exception.BadRequestException;
 import com.telefonicatech.cmdbChile.exception.NotFoundException;
 import com.telefonicatech.cmdbChile.helper.RutUtils;

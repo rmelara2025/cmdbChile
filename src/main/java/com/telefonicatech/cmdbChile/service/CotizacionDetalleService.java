@@ -1,12 +1,12 @@
 package com.telefonicatech.cmdbChile.service;
 
 import com.telefonicatech.cmdbChile.dto.CotizacionDetalleCustomDto;
-import com.telefonicatech.cmdbChile.dto.CotizacionDetalleEditarRequest;
-import com.telefonicatech.cmdbChile.dto.CotizacionDetalleNuevoRequest;
-import com.telefonicatech.cmdbChile.dto.CotizacionDetalleResponse;
+import com.telefonicatech.cmdbChile.dto.requestObject.CotizacionDetalleEditarRequest;
+import com.telefonicatech.cmdbChile.dto.requestObject.CotizacionDetalleNuevoRequest;
+import com.telefonicatech.cmdbChile.dto.responseObject.CotizacionDetalleResponse;
 import com.telefonicatech.cmdbChile.mapper.CotizacionDetalleMapper;
 import com.telefonicatech.cmdbChile.model.CotizacionDetalle;
-import com.telefonicatech.cmdbChile.repository.CotizacionDetalleRepository;
+import com.telefonicatech.cmdbChile.repository.cotizaciones.CotizacionDetalleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

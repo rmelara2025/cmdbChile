@@ -1,6 +1,6 @@
 package com.telefonicatech.cmdbChile.mapper;
 
-import com.telefonicatech.cmdbChile.dto.ContratoViewResponse;
+import com.telefonicatech.cmdbChile.dto.responseObject.ContratoViewResponse;
 import com.telefonicatech.cmdbChile.model.ContratosView;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;

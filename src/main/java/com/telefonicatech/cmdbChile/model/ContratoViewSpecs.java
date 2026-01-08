@@ -1,6 +1,6 @@
 package com.telefonicatech.cmdbChile.model;
 
-import com.telefonicatech.cmdbChile.dto.ContratoFilterRequest;
+import com.telefonicatech.cmdbChile.dto.requestObject.ContratoFilterRequest;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;

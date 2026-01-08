@@ -1,7 +1,7 @@
 package com.telefonicatech.cmdbChile.controller;
 
-import com.telefonicatech.cmdbChile.dto.RecurrenteRequest;
-import com.telefonicatech.cmdbChile.dto.RecurrenteResponse;
+import com.telefonicatech.cmdbChile.dto.requestObject.RecurrenteRequest;
+import com.telefonicatech.cmdbChile.dto.responseObject.RecurrenteResponse;
 import com.telefonicatech.cmdbChile.service.RecurrentesService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

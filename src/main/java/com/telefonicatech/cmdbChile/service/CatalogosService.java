@@ -1,12 +1,12 @@
 package com.telefonicatech.cmdbChile.service;
 
-import com.telefonicatech.cmdbChile.dto.PeriodicidadResponse;
-import com.telefonicatech.cmdbChile.dto.ServicioResponse;
-import com.telefonicatech.cmdbChile.dto.TipoMonedaResponse;
+import com.telefonicatech.cmdbChile.dto.responseObject.PeriodicidadResponse;
+import com.telefonicatech.cmdbChile.dto.responseObject.ServicioResponse;
+import com.telefonicatech.cmdbChile.dto.responseObject.TipoMonedaResponse;
 import com.telefonicatech.cmdbChile.model.Periodicidad;
-import com.telefonicatech.cmdbChile.repository.PeriodicidadRepository;
-import com.telefonicatech.cmdbChile.repository.ServicioRepository;
-import com.telefonicatech.cmdbChile.repository.TipoMonedaRepository;
+import com.telefonicatech.cmdbChile.repository.catalogos.PeriodicidadRepository;
+import com.telefonicatech.cmdbChile.repository.catalogos.ServicioRepository;
+import com.telefonicatech.cmdbChile.repository.catalogos.TipoMonedaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

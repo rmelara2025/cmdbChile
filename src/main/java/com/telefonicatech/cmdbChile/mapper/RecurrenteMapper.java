@@ -1,6 +1,6 @@
 package com.telefonicatech.cmdbChile.mapper;
 
-import com.telefonicatech.cmdbChile.dto.RecurrenteResponse;
+import com.telefonicatech.cmdbChile.dto.responseObject.RecurrenteResponse;
 import com.telefonicatech.cmdbChile.model.DashboardRecurrentesView;
 import org.springframework.stereotype.Component;
 

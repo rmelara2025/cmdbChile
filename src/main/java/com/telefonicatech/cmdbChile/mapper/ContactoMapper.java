@@ -1,7 +1,7 @@
 package com.telefonicatech.cmdbChile.mapper;
 
-import com.telefonicatech.cmdbChile.dto.ContactoRequest;
-import com.telefonicatech.cmdbChile.dto.ContactoResponse;
+import com.telefonicatech.cmdbChile.dto.requestObject.ContactoRequest;
+import com.telefonicatech.cmdbChile.dto.responseObject.ContactoResponse;
 import com.telefonicatech.cmdbChile.exception.BadRequestException;
 import com.telefonicatech.cmdbChile.model.Contacto;
 import com.telefonicatech.cmdbChile.helper.RutUtils;

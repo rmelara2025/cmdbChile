@@ -1,10 +1,10 @@
 package com.telefonicatech.cmdbChile.controller;
 
-import com.telefonicatech.cmdbChile.dto.CotizacionCompletaResponse;
-import com.telefonicatech.cmdbChile.dto.CotizacionEstadoUpdateRequest;
-import com.telefonicatech.cmdbChile.dto.CotizacionItemsUpdateRequest;
-import com.telefonicatech.cmdbChile.dto.CotizacionResponse;
-import com.telefonicatech.cmdbChile.dto.CotizacionVersionResponse;
+import com.telefonicatech.cmdbChile.dto.responseObject.CotizacionCompletaResponse;
+import com.telefonicatech.cmdbChile.dto.requestObject.CotizacionEstadoUpdateRequest;
+import com.telefonicatech.cmdbChile.dto.requestObject.CotizacionItemsUpdateRequest;
+import com.telefonicatech.cmdbChile.dto.responseObject.CotizacionResponse;
+import com.telefonicatech.cmdbChile.dto.responseObject.CotizacionVersionResponse;
 import com.telefonicatech.cmdbChile.service.CotizacionService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

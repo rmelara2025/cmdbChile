@@ -1,14 +1,14 @@
 package com.telefonicatech.cmdbChile.service;
 
-import com.telefonicatech.cmdbChile.dto.CotizacionCompletaResponse;
-import com.telefonicatech.cmdbChile.dto.CotizacionDetalleItemRequest;
-import com.telefonicatech.cmdbChile.dto.CotizacionDetalleItemResponse;
-import com.telefonicatech.cmdbChile.dto.CotizacionResponse;
-import com.telefonicatech.cmdbChile.dto.CotizacionTotalResponse;
-import com.telefonicatech.cmdbChile.dto.CotizacionVersionResponse;
+import com.telefonicatech.cmdbChile.dto.responseObject.CotizacionCompletaResponse;
+import com.telefonicatech.cmdbChile.dto.requestObject.CotizacionDetalleItemRequest;
+import com.telefonicatech.cmdbChile.dto.responseObject.CotizacionDetalleItemResponse;
+import com.telefonicatech.cmdbChile.dto.responseObject.CotizacionResponse;
+import com.telefonicatech.cmdbChile.dto.responseObject.CotizacionTotalResponse;
+import com.telefonicatech.cmdbChile.dto.responseObject.CotizacionVersionResponse;
 import com.telefonicatech.cmdbChile.exception.NotFoundException;
 import com.telefonicatech.cmdbChile.model.Cotizacion;
-import com.telefonicatech.cmdbChile.repository.CotizacionRepository;
+import com.telefonicatech.cmdbChile.repository.cotizaciones.CotizacionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
