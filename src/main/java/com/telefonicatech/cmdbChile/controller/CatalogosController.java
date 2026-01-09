@@ -1,14 +1,19 @@
 package com.telefonicatech.cmdbChile.controller;
 
+import com.telefonicatech.cmdbChile.dto.FamiliaDto;
+import com.telefonicatech.cmdbChile.dto.responseObject.FamiliaServiciosResponse;
 import com.telefonicatech.cmdbChile.dto.responseObject.PeriodicidadResponse;
 import com.telefonicatech.cmdbChile.dto.responseObject.ServicioResponse;
 import com.telefonicatech.cmdbChile.dto.responseObject.TipoMonedaResponse;
 import com.telefonicatech.cmdbChile.service.CatalogosService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -35,5 +40,18 @@ public class CatalogosController {
     @GetMapping("/periodicidades")
     public ResponseEntity<List<PeriodicidadResponse>> obtenerPeriodicidades() {
         return ResponseEntity.ok(service.obtenerPeriodicidades());
+    }
+
+    @GetMapping("/familias")
+    public ResponseEntity<List<FamiliaDto>> obtenerFamilias() {
+        List<FamiliaDto> res = service.listarFamilias();
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/familias/{idFamilia}/servicios")
+    public ResponseEntity<FamiliaServiciosResponse> obtenerPorFamilia(@PathVariable Integer idFamilia) {
+        FamiliaServiciosResponse res = service.obtenerPorFamilia(idFamilia);
+        if (res == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Familia no encontrada");
+        return ResponseEntity.ok(res);
     }
 }
