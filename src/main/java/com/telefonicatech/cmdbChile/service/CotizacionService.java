@@ -1,5 +1,6 @@
 package com.telefonicatech.cmdbChile.service;
 
+import com.telefonicatech.cmdbChile.dto.requestObject.CotizacionCreateRequest;
 import com.telefonicatech.cmdbChile.dto.responseObject.CotizacionCompletaResponse;
 import com.telefonicatech.cmdbChile.dto.requestObject.CotizacionDetalleItemRequest;
 import com.telefonicatech.cmdbChile.dto.responseObject.CotizacionDetalleItemResponse;
@@ -23,9 +24,11 @@ import java.util.UUID;
 public class CotizacionService {
 
     private final CotizacionRepository repository;
+    private final CodigoGeneradorService codigoGenerador;
 
-    public CotizacionService(CotizacionRepository repository) {
+    public CotizacionService(CotizacionRepository repository, CodigoGeneradorService codigoGenerador) {
         this.repository = repository;
+        this.codigoGenerador = codigoGenerador;
     }
 
     /**
@@ -126,6 +129,57 @@ public class CotizacionService {
     }
 
     /**
+     * Crea una nueva cotización
+     * - Genera automáticamente el código de cotización (COT-YYYY-NNNNNNNN)
+     * - Asigna versión 1
+     * - Estado inicial BORRADOR (1)
+     */
+    @Transactional
+    public CotizacionResponse crearCotizacion(CotizacionCreateRequest request) {
+        System.out.println("Creando nueva cotización para contrato: " + request.getIdContrato());
+
+        // ⭐ GENERAR CÓDIGO DE COTIZACIÓN (Backend)
+        String codigoCotizacion = codigoGenerador.generarCodigoCotizacion();
+        System.out.println("Código generado: " + codigoCotizacion);
+
+        // Crear nueva cotización
+        Cotizacion cotizacion = new Cotizacion();
+        cotizacion.setIdCotizacion(UUID.randomUUID());
+        cotizacion.setIdContrato(request.getIdContrato());
+        cotizacion.setNumeroCotizacion(codigoCotizacion); // ⭐ Backend asigna el código
+        cotizacion.setVersion(1); // Primera versión
+        cotizacion.setIdEstadoCotizacion(1); // BORRADOR
+        cotizacion.setFechaEmision(request.getFechaEmision());
+        cotizacion.setFechaVigenciaDesde(request.getFechaVigenciaDesde());
+        cotizacion.setFechaVigenciaHasta(request.getFechaVigenciaHasta());
+        cotizacion.setObservacion(request.getObservacion());
+        cotizacion.setIdUsuarioCreacion(request.getIdUsuarioCreacion());
+        cotizacion.setFechaRegistro(LocalDateTime.now());
+        cotizacion.setFechaModificacion(LocalDateTime.now());
+
+        // Guardar en base de datos
+        try {
+            cotizacion = repository.save(cotizacion);
+            System.out.println("Cotización creada exitosamente: " + cotizacion.getIdCotizacion());
+        } catch (Exception e) {
+            System.err.println("Error al guardar cotización: " + e.getMessage());
+            throw new RuntimeException("Error al crear cotización: " + e.getMessage(), e);
+        }
+
+        // Preparar respuesta
+        CotizacionResponse response = new CotizacionResponse();
+        response.setIdCotizacion(cotizacion.getIdCotizacion());
+        response.setIdContrato(cotizacion.getIdContrato());
+        response.setNumeroCotizacion(cotizacion.getNumeroCotizacion());
+        response.setVersion(cotizacion.getVersion());
+        response.setEstadoNombre("BORRADOR");
+        response.setEstadoDescripcion("Cotización en estado borrador");
+        response.setObservacion(cotizacion.getObservacion());
+
+        return response;
+    }
+
+    /**
      * Actualiza el estado de una cotización
      */
     @Transactional
@@ -139,15 +193,16 @@ public class CotizacionService {
     }
 
     /**
-     * Versiona una cotización existente
+     * Versiona una cotización existente (modifica items)
      * - Crea nueva cotización con version+1
+     * - ⭐ MANTIENE EL MISMO CÓDIGO (trazabilidad de versiones)
      * - Nueva cotización en estado BORRADOR (1)
-     * - Marca anterior como REEMPLAZADA (7)
+     * - Marca anterior como REEMPLAZADA (5)
      */
     @Transactional
     public CotizacionVersionResponse versionarCotizacion(UUID idCotizacionAnterior) {
         System.out.println("Versionando cotización: " + idCotizacionAnterior.toString());
-        
+
         // Obtener cotizacion anterior
         Cotizacion anterior = repository.findById(idCotizacionAnterior)
                 .orElseThrow(() -> {
@@ -156,27 +211,33 @@ public class CotizacionService {
                 });
 
         System.out.println(String.format("Cotización anterior encontrada - Versión: {}, Contrato: {}",
-            anterior.getVersion(), anterior.getIdContrato()));
+                anterior.getVersion(), anterior.getIdContrato()));
 
         // Crear nueva versión
         Cotizacion nueva = new Cotizacion();
         nueva.setIdCotizacion(UUID.randomUUID());
         nueva.setIdContrato(anterior.getIdContrato());
+
+        // ⭐ MANTENER EL MISMO CÓDIGO (no generar nuevo)
+        // Al versionar, conservamos el número para trazabilidad
         nueva.setNumeroCotizacion(anterior.getNumeroCotizacion());
+
         nueva.setVersion(anterior.getVersion() + 1);
         nueva.setIdEstadoCotizacion(1); // BORRADOR
         nueva.setFechaEmision(LocalDate.now());
         nueva.setFechaVigenciaDesde(anterior.getFechaVigenciaDesde());
         nueva.setFechaVigenciaHasta(anterior.getFechaVigenciaHasta());
         nueva.setFechaRegistro(LocalDateTime.now());
-        nueva.setIdUsuarioCreacion(anterior.getIdUsuarioCreacion()); //TODO: CAMBIAR DESPUES POR EL USAURIO QUE ESTA LOGUEADO
+        nueva.setIdUsuarioCreacion(anterior.getIdUsuarioCreacion()); // Mantiene el usuario original
 
         String observacionReemplazo = String.format(
                 "Reemplazada por modificación en servicios - Ver v%d",
                 nueva.getVersion());
         nueva.setObservacion(observacionReemplazo);
 
-        System.out.println(String.format("Guardando nueva versión: {}, v{}", nueva.getIdCotizacion(), nueva.getVersion()));
+        System.out.println(
+                String.format("Guardando nueva versión: {}, v{}, código: {}", 
+                    nueva.getIdCotizacion(), nueva.getVersion(), nueva.getNumeroCotizacion()));
 
         // Guardar nueva versión
         try {
@@ -191,12 +252,12 @@ public class CotizacionService {
         anterior.setIdEstadoCotizacion(5);
         anterior.setObservacion(observacionReemplazo);
         anterior.setFechaModificacion(LocalDateTime.now());
-        
+
         try {
             repository.save(anterior);
             System.out.println("Cotización anterior marcada como REEMPLAZADA");
         } catch (Exception e) {
-            System.out.println("Error al actualizar cotización anterior: {} "+  e.getMessage());
+            System.out.println("Error al actualizar cotización anterior: {} " + e.getMessage());
             throw e;
         }
 
@@ -207,7 +268,7 @@ public class CotizacionService {
         response.setVersion(nueva.getVersion());
 
         System.out.println(String.format("Versionado completado exitosamente - Nueva ID: {}, v{}",
-            response.getIdNuevaCotizacion(), response.getVersion()));
+                response.getIdNuevaCotizacion(), response.getVersion()));
 
         return response;
     }

@@ -25,13 +25,14 @@ public class CotizacionDetalleController {
     private final CotizacionDetalleService service;
     private final HelperCommons helpers;
 
-    public CotizacionDetalleController(CotizacionDetalleService service, HelperCommons helpers){
+    public CotizacionDetalleController(CotizacionDetalleService service, HelperCommons helpers) {
         this.service = service;
         this.helpers = helpers;
     }
 
     @GetMapping("/{idContrato}/detalle")
-    public ResponseEntity<Page<CotizacionDetalleResponse>> obtenerDetalle(@PathVariable String idContrato, @ModelAttribute ContratoFilterRequest filter){
+    public ResponseEntity<Page<CotizacionDetalleResponse>> obtenerDetalle(@PathVariable String idContrato,
+            @ModelAttribute ContratoFilterRequest filter) {
 
         // Validar que el idContrato sea un UUID válido y dar un 400 claro si no lo es
         UUID uuid;
@@ -43,24 +44,21 @@ public class CotizacionDetalleController {
 
         List<Sort.Order> orders = helpers.parseSort(filter.getSort());
 
-
         Pageable pageable = PageRequest.of(
                 filter.getPage(),
                 filter.getSize(),
-                Sort.by(orders)
-        );
-        Page<CotizacionDetalleResponse> page = service.obtenerDetalleCotizacion(uuid,pageable);
+                Sort.by(orders));
+        Page<CotizacionDetalleResponse> page = service.obtenerDetalleCotizacion(uuid, pageable);
         return ResponseEntity.ok(page);
     }
 
-
-    @PostMapping
+    @PostMapping("/detalle")
     public ResponseEntity<Void> putNuevoDetalle(@RequestBody CotizacionDetalleNuevoRequest request) {
         service.addNewDetalle(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("/editar")
+    @PutMapping("/detalle/editar")
     public ResponseEntity<Void> putEditarDetalle(@RequestBody CotizacionDetalleEditarRequest request) {
         service.editDetalle(request);
         return ResponseEntity.status(HttpStatus.OK).build();

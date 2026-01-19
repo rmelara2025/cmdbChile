@@ -1,5 +1,6 @@
 package com.telefonicatech.cmdbChile.controller;
 
+import com.telefonicatech.cmdbChile.dto.requestObject.CotizacionCreateRequest;
 import com.telefonicatech.cmdbChile.dto.responseObject.CotizacionCompletaResponse;
 import com.telefonicatech.cmdbChile.dto.requestObject.CotizacionEstadoUpdateRequest;
 import com.telefonicatech.cmdbChile.dto.requestObject.CotizacionItemsUpdateRequest;
@@ -24,6 +25,25 @@ public class CotizacionController {
 
     public CotizacionController(CotizacionService service) {
         this.service = service;
+    }
+
+    /**
+     * Crea una nueva cotización
+     * POST /api/cotizaciones
+     * El código de cotización (COT-YYYY-NNNNNNNN) es generado automáticamente por
+     * el backend
+     */
+    @PostMapping("/api/cotizaciones")
+    public ResponseEntity<CotizacionResponse> crearCotizacion(
+            @Valid @RequestBody CotizacionCreateRequest request) {
+        try {
+            CotizacionResponse response = service.crearCotizacion(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error al crear cotización: " + e.getMessage());
+        }
     }
 
     /**
