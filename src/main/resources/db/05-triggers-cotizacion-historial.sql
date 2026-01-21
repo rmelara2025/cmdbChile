@@ -32,51 +32,16 @@ VALUES (
     );
 END $$ DELIMITER;
 -- ===========================================================================
--- TRIGGER 2: Registrar cambios de estado o versión al actualizar cotización
+-- TRIGGER 2: Registrar SOLO cambios de VERSIÓN (NO de estado)
+-- Los cambios de estado se registran manualmente desde el backend con comentarios del usuario
 -- ===========================================================================
 DELIMITER $$ CREATE TRIGGER `trg_cotizacion_actualizar_historial`
 AFTER
 UPDATE ON `cotizacion` FOR EACH ROW BEGIN
 DECLARE v_comentario VARCHAR(500);
-DECLARE v_cambio_detectado BOOLEAN DEFAULT FALSE;
--- Construir comentario según el tipo de cambio
-SET v_comentario = '';
--- Detectar cambio de estado
-IF OLD.idestadoCotizacion != NEW.idestadoCotizacion THEN
-SET v_cambio_detectado = TRUE;
-SET v_comentario = CONCAT(
-        'Cambio de estado',
-        CASE
-            WHEN OLD.version != NEW.version THEN CONCAT(
-                ' y versión (',
-                OLD.version,
-                ' → ',
-                NEW.version,
-                ')'
-            )
-            ELSE ''
-        END
-    );
--- Registrar cambio de estado
-INSERT INTO cotizacionhistorial (
-        idCotizacion,
-        idEstadoAnterior,
-        idEstadoNuevo,
-        idUsuario,
-        comentario,
-        fechaCambio
-    )
-VALUES (
-        NEW.idcotizacion,
-        OLD.idestadoCotizacion,
-        NEW.idestadoCotizacion,
-        NEW.idUsuarioCreacion,
-        v_comentario,
-        NOW()
-    );
--- Detectar cambio de versión SIN cambio de estado
-ELSEIF OLD.version != NEW.version THEN
-SET v_cambio_detectado = TRUE;
+-- SOLO registrar si cambia la VERSIÓN (no el estado)
+-- Los cambios de estado se manejan manualmente desde CotizacionService
+IF OLD.version != NEW.version THEN
 SET v_comentario = CONCAT(
         'Nueva versión creada: ',
         OLD.version,
@@ -101,17 +66,6 @@ VALUES (
         NOW()
     );
 END IF;
--- Actualizar fechaModificacion si hubo algún cambio relevante
-IF v_cambio_detectado
-OR OLD.observacion != NEW.observacion
-OR OLD.fechaVigenciaDesde != NEW.fechaVigenciaDesde
-OR OLD.fechaVigenciaHasta != NEW.fechaVigenciaHasta THEN -- Actualizar fecha de modificación (solo si no se actualizó ya en la misma transacción)
-IF OLD.fechaModificacion = NEW.fechaModificacion THEN
-UPDATE cotizacion
-SET fechaModificacion = NOW()
-WHERE idcotizacion = NEW.idcotizacion;
-END IF;
-END IF;
 END $$ DELIMITER;
 -- ===========================================================================
 -- Verificación de triggers creados
@@ -135,25 +89,22 @@ ORDER BY ACTION_TIMING,
 --    - Incluye la versión inicial en el comentario
 --
 -- 2. TRIGGER trg_cotizacion_actualizar_historial (AFTER UPDATE):
---    - Se ejecuta al actualizar una cotización existente
---    - Detecta cambios en:
---      * idestadoCotizacion (cambio de estado)
---      * version (nueva versión)
---      * Ambos simultáneamente
---    - Genera comentarios descriptivos del cambio
---    - Actualiza automáticamente fechaModificacion
+--    - Se ejecuta SOLO al cambiar la VERSIÓN
+--    - NO se ejecuta para cambios de estado (evita duplicados)
+--    - Los cambios de estado se registran manualmente desde CotizacionService
+--      con comentarios y motivos proporcionados por el usuario
 --
--- 3. CAMPOS REGISTRADOS:
+-- 3. CAMPOS REGISTRADOS EN HISTORIAL:
 --    - idCotizacion: UUID de la cotización modificada
 --    - idEstadoAnterior: Estado previo al cambio
 --    - idEstadoNuevo: Estado posterior al cambio
 --    - idUsuario: Usuario que realizó el cambio
---    - comentario: Descripción automática del cambio
+--    - comentario: Descripción del cambio (del usuario o automática)
+--    - motivoRechazo: Motivo del rechazo si aplica
 --    - fechaCambio: Timestamp del cambio
 --
--- 4. MEJORAS PENDIENTES OPCIONALES:
---    - Capturar IP del usuario (requiere modificación en aplicación)
---    - Agregar motivo de rechazo (debe venir desde la aplicación)
---    - Registrar cambios en otros campos relevantes
+-- 4. FLUJO DE CAMBIO DE ESTADO:
+--    Backend (CotizacionService) → Valida permisos → Inserta en historial manualmente
+--    → Actualiza estado en cotización → Trigger NO se ejecuta (solo versión)
 --
 -- ===========================================================================

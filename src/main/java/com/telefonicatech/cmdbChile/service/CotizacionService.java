@@ -10,6 +10,7 @@ import com.telefonicatech.cmdbChile.dto.responseObject.CotizacionVersionResponse
 import com.telefonicatech.cmdbChile.exception.NotFoundException;
 import com.telefonicatech.cmdbChile.model.Cotizacion;
 import com.telefonicatech.cmdbChile.repository.cotizaciones.CotizacionRepository;
+import com.telefonicatech.cmdbChile.service.usuarios.TransicionEstadoService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +26,14 @@ public class CotizacionService {
 
     private final CotizacionRepository repository;
     private final CodigoGeneradorService codigoGenerador;
+    private final TransicionEstadoService transicionEstadoService;
 
-    public CotizacionService(CotizacionRepository repository, CodigoGeneradorService codigoGenerador) {
+    public CotizacionService(CotizacionRepository repository,
+            CodigoGeneradorService codigoGenerador,
+            TransicionEstadoService transicionEstadoService) {
         this.repository = repository;
         this.codigoGenerador = codigoGenerador;
+        this.transicionEstadoService = transicionEstadoService;
     }
 
     /**
@@ -181,7 +186,10 @@ public class CotizacionService {
 
     /**
      * Actualiza el estado de una cotización
+     * 
+     * @deprecated Usar actualizarEstadoConValidacion() en su lugar
      */
+    @Deprecated
     @Transactional
     public void actualizarEstado(UUID idCotizacion, Integer idEstadoCotizacion) {
         // Verificar que la cotización existe
@@ -190,6 +198,67 @@ public class CotizacionService {
 
         // Actualizar el estado
         repository.updateEstado(idCotizacion.toString(), idEstadoCotizacion);
+    }
+
+    /**
+     * Actualiza el estado de una cotización con validación de permisos de
+     * transición
+     * 
+     * @param idCotizacion  ID de la cotización
+     * @param idEstadoNuevo ID del estado destino
+     * @param idUsuario     ID del usuario que realiza el cambio
+     * @param comentario    Comentario opcional (puede ser requerido según la
+     *                      transición)
+     * @param motivoRechazo Motivo de rechazo opcional (puede ser requerido según la
+     *                      transición)
+     * @param ipAddress     Dirección IP del cliente para auditoría
+     * @throws NotFoundException        si la cotización no existe
+     * @throws IllegalStateException    si el usuario no tiene permiso para la
+     *                                  transición
+     * @throws IllegalArgumentException si faltan campos obligatorios
+     */
+    @Transactional
+    public void actualizarEstadoConValidacion(UUID idCotizacion, Integer idEstadoNuevo,
+            String idUsuario, String comentario, String motivoRechazo, String ipAddress) {
+        // Verificar que la cotización existe y obtener estado actual
+        Cotizacion cotizacion = repository.findById(idCotizacion)
+                .orElseThrow(() -> new NotFoundException("Cotización no encontrada: " + idCotizacion));
+
+        Integer estadoActual = cotizacion.getIdEstadoCotizacion();
+
+        // Validar que el usuario tiene permiso para realizar esta transición
+        transicionEstadoService.validarTransicion(idUsuario, estadoActual, idEstadoNuevo);
+
+        // Generar comentario por defecto si no se proporcionó pero la transición lo requiere
+        String comentarioFinal = comentario;
+        boolean requiereComentario = transicionEstadoService.requiereComentario(estadoActual, idEstadoNuevo);
+        
+        if ((comentarioFinal == null || comentarioFinal.trim().isEmpty()) && requiereComentario) {
+            comentarioFinal = String.format("Cambio de estado realizado por usuario %s", idUsuario);
+        }
+
+        // Ahora validar con el comentario ya generado
+        transicionEstadoService.validarCamposObligatorios(estadoActual, idEstadoNuevo, comentarioFinal, motivoRechazo);
+
+        // 1. Insertar registro en historial CON el comentario del usuario y la IP
+        // (El trigger NO se ejecutará porque solo responde a cambios de versión)
+        repository.insertarHistorial(
+                idCotizacion.toString(),
+                estadoActual,
+                idEstadoNuevo,
+                idUsuario,
+                comentarioFinal,
+                motivoRechazo,
+                ipAddress);
+
+        // 2. Actualizar el estado
+        repository.updateEstado(idCotizacion.toString(), idEstadoNuevo);
+
+        // 3. Actualizar la observación de la cotización con el comentario
+        // Esto permite ver inmediatamente en la lista qué pasó con la cotización
+        if (comentarioFinal != null && !comentarioFinal.trim().isEmpty()) {
+            repository.updateObservacion(idCotizacion.toString(), comentarioFinal);
+        }
     }
 
     /**
@@ -236,8 +305,8 @@ public class CotizacionService {
         nueva.setObservacion(observacionReemplazo);
 
         System.out.println(
-                String.format("Guardando nueva versión: {}, v{}, código: {}", 
-                    nueva.getIdCotizacion(), nueva.getVersion(), nueva.getNumeroCotizacion()));
+                String.format("Guardando nueva versión: {}, v{}, código: {}",
+                        nueva.getIdCotizacion(), nueva.getVersion(), nueva.getNumeroCotizacion()));
 
         // Guardar nueva versión
         try {
