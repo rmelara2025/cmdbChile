@@ -13,19 +13,21 @@ VALUES ('ONE_SHOT', 0, 'Pago único, no recurrente'),
     ('SEMESTRAL', 6, 'Cobro semestral'),
     ('ANUAL', 12, 'Cobro anual');
 -- Estados de cotización
-INSERT INTO `estadocotizacion` (`nombre`, `ordern`, `descripcion`)
-VALUES ('BORRADOR', 1, 'Cotización en construcción'),
-    ('EN_REVISION', 2, 'Enviada para revisión'),
-    ('APROBADA', 3, 'Aprobada internamente'),
-    ('VIGENTE', 4, 'Cotización actualmente vigente'),
+-- Nota: tabla tiene 'ordern' Y 'orden', insertar en ambas para compatibilidad
+INSERT INTO `estadocotizacion` (`nombre`, `ordern`, `orden`, `descripcion`)
+VALUES ('BORRADOR', 1, 1, 'Cotización en construcción'),
+    ('EN_REVISION', 2, 2, 'Enviada para revisión'),
+    ('APROBADA', 3, 3, 'Aprobada internamente'),
+    ('VIGENTE', 4, 4, 'Cotización actualmente vigente'),
     (
         'REEMPLAZADA',
         5,
+        5,
         'Reemplazada por una nueva versión'
     ),
-    ('ANULADA', 6, 'Anulada por error o corrección'),
-    ('CANCELADA', 7, 'Cancelada por el cliente'),
-    ('DE_BAJA', 8, 'Dada de baja');
+    ('ANULADA', 6, 6, 'Anulada por error o corrección'),
+    ('CANCELADA', 7, 7, 'Cancelada por el cliente'),
+    ('DE_BAJA', 8, 8, 'Dada de baja');
 -- ============================================
 -- 2. CLIENTES (si no existen)
 -- ============================================
@@ -58,7 +60,7 @@ VALUES (
 -- ============================================
 INSERT IGNORE INTO `servicio` (
         `idServicio`,
-        `nombre`,
+        `nombreServicio`,
         `descripcion`,
         `idFamilia`
     )

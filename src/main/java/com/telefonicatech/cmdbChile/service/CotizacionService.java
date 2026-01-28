@@ -229,10 +229,11 @@ public class CotizacionService {
         // Validar que el usuario tiene permiso para realizar esta transición
         transicionEstadoService.validarTransicion(idUsuario, estadoActual, idEstadoNuevo);
 
-        // Generar comentario por defecto si no se proporcionó pero la transición lo requiere
+        // Generar comentario por defecto si no se proporcionó pero la transición lo
+        // requiere
         String comentarioFinal = comentario;
         boolean requiereComentario = transicionEstadoService.requiereComentario(estadoActual, idEstadoNuevo);
-        
+
         if ((comentarioFinal == null || comentarioFinal.trim().isEmpty()) && requiereComentario) {
             comentarioFinal = String.format("Cambio de estado realizado por usuario %s", idUsuario);
         }

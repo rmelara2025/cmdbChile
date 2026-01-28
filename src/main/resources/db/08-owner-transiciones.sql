@@ -2,7 +2,7 @@
 -- SCRIPT: Agregar rol Owner (id=5) a todas las transiciones de estado
 -- PROPÓSITO: Permitir que el rol Owner (SystemAdministrator) pueda realizar todas las transiciones
 -- ============================================
-USE cmdb_chile;
+USE cmdb_tech;
 -- Agregar Owner a todas las transiciones existentes
 -- Usamos INSERT IGNORE para evitar duplicados si ya existe alguna asignación
 -- Transición 1: BORRADOR → EN_REVISIÓN

@@ -15,30 +15,31 @@ CREATE TABLE IF NOT EXISTS permisos (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabla de Roles (si no existe ya)
-CREATE TABLE IF NOT EXISTS roles (
-    id_rol INT AUTO_INCREMENT PRIMARY KEY,
-    nombre_rol VARCHAR(100) NOT NULL UNIQUE,
-    descripcion TEXT,
+-- Nombres de campos según schema real: idrol, nombreRol, descripcionRol
+CREATE TABLE IF NOT EXISTS rol (
+    idrol INT AUTO_INCREMENT PRIMARY KEY,
+    nombreRol VARCHAR(100) NOT NULL UNIQUE,
+    descripcionRol TEXT,
     activo BOOLEAN DEFAULT TRUE,
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT uk_nombre_rol UNIQUE (nombre_rol)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    CONSTRAINT uk_nombre_rol UNIQUE (nombreRol)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Tabla intermedia Rol-Permisos (relación muchos-a-muchos)
-CREATE TABLE IF NOT EXISTS rol_permisos (
-    id_rol INT NOT NULL,
-    id_permiso INT NOT NULL,
-    fecha_asignacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id_rol, id_permiso),
-    CONSTRAINT fk_rol_permisos_rol FOREIGN KEY (id_rol) REFERENCES roles(id_rol) ON DELETE CASCADE,
-    CONSTRAINT fk_rol_permisos_permiso FOREIGN KEY (id_permiso) REFERENCES permisos(id_permiso) ON DELETE CASCADE
+-- Nombres según schema real: rolpermisos (sin guion bajo), idrol, idpermiso, fechaasignacion
+CREATE TABLE IF NOT EXISTS rolpermisos (
+    idrol INT NOT NULL,
+    idpermiso INT NOT NULL,
+    fechaasignacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (idrol, idpermiso),
+    CONSTRAINT fk_rol_permisos_rol FOREIGN KEY (idrol) REFERENCES rol(idrol) ON DELETE CASCADE,
+    CONSTRAINT fk_rol_permisos_permiso FOREIGN KEY (idpermiso) REFERENCES permisos(idpermiso) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
 -- INSERTS: Permisos
 -- ============================================
 
-INSERT INTO permisos (codigo_permiso, descripcion, modulo) VALUES
+INSERT INTO permisos (codigopermiso, descripcion, modulo) VALUES
 ('VER_TODO', 'Acceso completo a todos los módulos y funcionalidades', 'GENERAL'),
 ('VER_SERVICIOS_CONTRATOS', 'Ver servicios y contratos (sin recurrencias)', 'SERVICIOS'),
 ('VER_RECURRENCIAS', 'Ver información de recurrencias', 'SERVICIOS'),
@@ -60,7 +61,7 @@ INSERT INTO permisos (codigo_permiso, descripcion, modulo) VALUES
 -- INSERTS: Roles
 -- ============================================
 
-INSERT INTO roles (nombre_rol, descripcion) VALUES
+INSERT INTO rol (nombreRol, descripcionRol) VALUES
 ('Administrativo', 'Acceso a todo, modificar, reportes, altas, bajas, puede dar de alta usuarios'),
 ('Rol gerencial / team leader', 'Acceso a todo, reportes, vistas, alta de aprobación alta, alta de usuarios'),
 ('Solo vista VIP', 'Rol solo vista a todo, sin poder modificar ni aprobar, solo vista a todo, puede sacar reporte'),
@@ -70,43 +71,43 @@ INSERT INTO roles (nombre_rol, descripcion) VALUES
 -- INSERTS: Asignación de Permisos por Rol
 -- ============================================
 
--- ROL: Administrativo (id_rol = 1)
+-- ROL: Administrativo (idrol = 1)
 -- Tiene TODOS los permisos
-INSERT INTO rol_permisos (id_rol, id_permiso) 
-SELECT 1, id_permiso FROM permisos;
+INSERT INTO rolpermisos (idrol, idpermiso) 
+SELECT 1, idpermiso FROM permisos;
 
--- ROL: Rol gerencial / team leader (id_rol = 2)
+-- ROL: Rol gerencial / team leader (idrol = 2)
 -- Acceso a todo, reportes, vistas, aprobar, alta de usuarios (sin modificar, sin bajas)
-INSERT INTO rol_permisos (id_rol, id_permiso) VALUES
-(2, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'VER_TODO')),
-(2, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'VER_RECURRENCIAS')),
-(2, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'VER_REPORTES')),
-(2, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'EXPORTAR_REPORTES')),
-(2, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'APROBAR')),
-(2, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'ALTA_USUARIOS')),
-(2, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'VER_DASHBOARD')),
-(2, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'VER_COTIZACIONES')),
-(2, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'CREAR_COTIZACIONES')),
-(2, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'VER_CLIENTES'));
+INSERT INTO rolpermisos (idrol, idpermiso) VALUES
+(2, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'VER_TODO')),
+(2, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'VER_RECURRENCIAS')),
+(2, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'VER_REPORTES')),
+(2, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'EXPORTAR_REPORTES')),
+(2, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'APROBAR')),
+(2, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'ALTA_USUARIOS')),
+(2, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'VER_DASHBOARD')),
+(2, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'VER_COTIZACIONES')),
+(2, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'CREAR_COTIZACIONES')),
+(2, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'VER_CLIENTES'));
 
--- ROL: Solo vista VIP (id_rol = 3)
+-- ROL: Solo vista VIP (idrol = 3)
 -- Ver todo, exportar reportes (sin modificar, sin aprobar)
-INSERT INTO rol_permisos (id_rol, id_permiso) VALUES
-(3, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'VER_TODO')),
-(3, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'VER_RECURRENCIAS')),
-(3, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'VER_REPORTES')),
-(3, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'EXPORTAR_REPORTES')),
-(3, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'VER_DASHBOARD')),
-(3, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'VER_COTIZACIONES')),
-(3, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'VER_CLIENTES'));
+INSERT INTO rolpermisos (idrol, idpermiso) VALUES
+(3, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'VER_TODO')),
+(3, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'VER_RECURRENCIAS')),
+(3, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'VER_REPORTES')),
+(3, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'EXPORTAR_REPORTES')),
+(3, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'VER_DASHBOARD')),
+(3, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'VER_COTIZACIONES')),
+(3, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'VER_CLIENTES'));
 
--- ROL: Solo vista (id_rol = 4)
+-- ROL: Solo vista (idrol = 4)
 -- Ver solo servicios y contratos (sin recurrencias, sin reportes)
-INSERT INTO rol_permisos (id_rol, id_permiso) VALUES
-(4, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'VER_SERVICIOS_CONTRATOS')),
-(4, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'VER_DASHBOARD')),
-(4, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'VER_COTIZACIONES')),
-(4, (SELECT id_permiso FROM permisos WHERE codigo_permiso = 'VER_CLIENTES'));
+INSERT INTO rolpermisos (idrol, idpermiso) VALUES
+(4, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'VER_SERVICIOS_CONTRATOS')),
+(4, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'VER_DASHBOARD')),
+(4, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'VER_COTIZACIONES')),
+(4, (SELECT idpermiso FROM permisos WHERE codigopermiso = 'VER_CLIENTES'));
 
 -- ============================================
 -- Consultas de Verificación
@@ -116,21 +117,22 @@ INSERT INTO rol_permisos (id_rol, id_permiso) VALUES
 -- SELECT * FROM permisos ORDER BY modulo, codigo_permiso;
 
 -- Ver todos los roles
--- SELECT * FROM roles;
+-- Ver todos los roles
+-- SELECT * FROM rol;
 
 -- Ver permisos por rol
--- SELECT r.nombre_rol, p.codigo_permiso, p.descripcion, p.modulo
--- FROM roles r
--- JOIN rol_permisos rp ON r.id_rol = rp.id_rol
--- JOIN permisos p ON rp.id_permiso = p.id_permiso
--- ORDER BY r.id_rol, p.modulo, p.codigo_permiso;
+-- SELECT r.nombreRol, p.codigopermiso, p.descripcion, p.modulo
+-- FROM rol r
+-- JOIN rolpermisos rp ON r.idrol = rp.idrol
+-- JOIN permisos p ON rp.idpermiso = p.idpermiso
+-- ORDER BY r.idrol, p.modulo, p.codigopermiso;
 
 -- Ver qué roles tienen un permiso específico
--- SELECT r.nombre_rol, p.codigo_permiso
--- FROM roles r
--- JOIN rol_permisos rp ON r.id_rol = rp.id_rol
--- JOIN permisos p ON rp.id_permiso = p.id_permiso
--- WHERE p.codigo_permiso = 'MODIFICAR';
+-- SELECT r.nombreRol, p.codigopermiso
+-- FROM rol r
+-- JOIN rolpermisos rp ON r.idrol = rp.idrol
+-- JOIN permisos p ON rp.idpermiso = p.idpermiso
+-- WHERE p.codigopermiso = 'MODIFICAR';
 
 -- ============================================
 -- Notas de Implementación

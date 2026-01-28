@@ -56,7 +56,7 @@ public class TransicionEstadoRepository {
             result.put("idEstadoDestino", row[1] != null ? ((Number) row[1]).intValue() : null);
             result.put("nombreEstadoDestino", row[2] != null ? row[2].toString() : null);
             result.put("descripcion", row[3] != null ? row[3].toString() : null);
-            
+
             // MySQL devuelve TINYINT(1) como Long, necesitamos convertir a Boolean
             result.put("requiereComentario", convertToBoolean(row[4]));
             result.put("requiereMotivoRechazo", convertToBoolean(row[5]));
